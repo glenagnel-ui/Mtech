@@ -2,6 +2,7 @@ import os
 import yaml
 import json
 import uuid
+from datetime import datetime
 import pandas as pd
 from loguru import logger
 from playwright.sync_api import sync_playwright
@@ -23,8 +24,9 @@ try:
 except ImportError:
     PdfReader = None
 
-CONFIG_PATH = os.path.join("configs", "test_suite.yaml")
-OUTPUT_DIR = "knowledge_base"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CONFIG_PATH = os.path.join(SCRIPT_DIR, "configs", "test_suite.yaml")
+OUTPUT_DIR = os.path.join(SCRIPT_DIR, "knowledge_base")
 EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 
 def init_kb_dir():
@@ -127,14 +129,16 @@ def main():
                 all_chunks.append({"source": url, "text": c})
                 
     for fp in excel_files:
-        text = process_excel(fp)
+        abs_fp = fp if os.path.isabs(fp) else os.path.join(SCRIPT_DIR, fp)
+        text = process_excel(abs_fp)
         if text:
             chunks = text_splitter.split_text(text)
             for c in chunks:
                 all_chunks.append({"source": fp, "text": c})
                 
     for fp in documents:
-        text = process_document(fp)
+        abs_fp = fp if os.path.isabs(fp) else os.path.join(SCRIPT_DIR, fp)
+        text = process_document(abs_fp)
         if text:
             chunks = text_splitter.split_text(text)
             for c in chunks:
@@ -162,8 +166,33 @@ def main():
     
     with open(os.path.join(OUTPUT_DIR, "chunks.json"), "w", encoding="utf-8") as f:
         json.dump(all_chunks, f, indent=4)
+    
+    # 5. Save metadata for the dashboard
+    unique_sources = list(set(chunk["source"] for chunk in all_chunks))
+    metadata = {
+        "scraped_at": datetime.now().isoformat(),
+        "total_chunks": len(all_chunks),
+        "total_sources": len(unique_sources),
+        "sources": unique_sources,
+        "embedding_model": EMBEDDING_MODEL_NAME,
+        "embedding_dimension": int(dimension)
+    }
+    
+    # Load existing history or create new
+    history_path = os.path.join(OUTPUT_DIR, "scrape_history.json")
+    history = []
+    if os.path.exists(history_path):
+        with open(history_path, "r", encoding="utf-8") as f:
+            history = json.load(f)
+    history.append(metadata)
+    
+    with open(history_path, "w", encoding="utf-8") as f:
+        json.dump(history, f, indent=4)
+    
+    with open(os.path.join(OUTPUT_DIR, "metadata.json"), "w", encoding="utf-8") as f:
+        json.dump(metadata, f, indent=4)
         
-    logger.success(f"Knowledge Base securely vectorized & saved to ./{OUTPUT_DIR}!")
+    logger.success(f"Knowledge Base securely vectorized & saved to {OUTPUT_DIR}!")
 
 if __name__ == "__main__":
     main()

@@ -33,7 +33,7 @@ An intelligent, autonomous testing suite for validating Retrieval-Augmented Gene
 | **Multi-Agent Pipeline** | Three specialized LLM agents (Generator, Judge, Classifier) collaborate autonomously to create, evaluate, and diagnose test results |
 | **Playwright UI Automation** | Automatically navigates to the target chatbot's web UI, sends questions, and extracts responses — zero human intervention |
 | **Neon Cloud Postgres** | Persists all execution metrics, verdicts, and failure analyses to a serverless Neon PostgreSQL database |
-| **Streamlit Dashboards** | Two interactive dashboards for visualizing test execution metrics, failure categories, and downloading generated test cases |
+| **Streamlit Dashboards** | Three interactive dashboards: Knowledge Base exploration (`kb_dashboard.py`), Test Execution results (`app.py`), and a viewer for Generated Test Cases (`dashboard.py`) |
 | **Workflow Runner** | Standalone RAG-powered test case generator that queries the FAISS index to produce context-aware acceptance-criteria-bound test prompts |
 
 ---
@@ -77,10 +77,11 @@ An intelligent, autonomous testing suite for validating Retrieval-Augmented Gene
 ┌────────────────────────────▼────────────────────────────────────┐
 │                       REPORTING LAYER                           │
 │                                                                 │
-│  📊 app.py (Streamlit)       — Execution results dashboard      │
-│  📋 dashboard.py (Streamlit) — Generated test case viewer       │
-│  📁 reports/execution_results/ — CSV result archives            │
-│  🗄️ Neon PostgreSQL          — Persistent cloud storage         │
+│  📊 app.py (Streamlit)           — Execution results dashboard      │
+│  📚 kb_dashboard.py (Streamlit)   — KB semantic search & metadata    │
+│  📋 dashboard.py (Streamlit)     — Generated test case viewer       │
+│  📁 reports/execution_results/     — CSV result archives            │
+│  🗄️ Neon PostgreSQL              — Persistent cloud storage         │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -119,6 +120,7 @@ agentic_ai_rag_tester/
 ├── .env                          # API keys and chatbot selectors (gitignored)
 ├── .gitignore
 ├── app.py                        # Streamlit dashboard — execution results viewer
+├── kb_dashboard.py               # Streamlit dashboard — knowledge base search viewer
 ├── dashboard.py                  # Streamlit dashboard — generated test case viewer
 ├── generate_test_suite.py        # CLI entry point — offline test generation only
 ├── main.py                       # CLI entry point — full end-to-end pipeline
@@ -347,6 +349,21 @@ python workflow_runner.py
 ---
 
 ## 📊 Dashboards
+
+### Scraped Knowledge Base Dashboard (`kb_dashboard.py`)
+
+Interactive dashboard for exploring the FAISS vector knowledge base, performing semantic searches, and viewing source metadata.
+
+```powershell
+streamlit run kb_dashboard.py
+```
+
+**Features:**
+- **Real-time Stats**: Total chunks, scraped URLs, and source counts.
+- **Semantic Search**: Directly query the FAISS index to see how content is retrieved.
+- **Source Links**: Full URL links to original documentation.
+- **Scrape History**: Visualization of recent scraping activities with status indicators.
+- **Data Preview**: Expandable table of all raw text chunks in the knowledge base.
 
 ### Execution Results Dashboard (`app.py`)
 

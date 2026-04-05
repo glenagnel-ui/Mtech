@@ -1,0 +1,12 @@
+llm:
+  generator_model: "llama-3.1-8b-instant"
+  judge_model: "llama-3.3-70b-versatile"
+  classifier_model: "llama-3.3-70b-versatile"
+
+browser:
+  headless: true
+  timeout_ms: 30000
+  slow_mo: 50
+
+logging:
+  level: "INFO"

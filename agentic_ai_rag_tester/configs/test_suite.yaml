@@ -1,0 +1,31 @@
+targets:
+  - url: "https://www.purdueglobal.edu/tuition-financial-aid/"
+    topics:
+      - "Financial Aid"
+      - "Tuition Costs"
+    tests_per_topic: 2
+    acceptance_criteria:
+      - "Given a user when I type a prompt for financial aid I should get a relevant financial aid answer"
+  - url: "https://www.purdueglobal.edu/tuition-financial-aid/undergraduate-graduate-tuition-and-fees/"
+    topics:
+      - "Undergraduate Fees"
+      - "Graduate Fees"
+    tests_per_topic: 2
+  - url: "https://www.purdueglobal.edu/tuition-financial-aid/tuition-reduction/"
+    topics:
+      - "Tuition Reduction"
+      - "Discounts"
+    tests_per_topic: 2
+
+personas:
+  - "Student"
+  - "Expert"
+  - "Skeptic"
+
+kb_sources:
+  urls:
+    - "https://www.purdueglobal.edu/tuition-financial-aid/"
+    - "https://www.purdueglobal.edu/tuition-financial-aid/undergraduate-graduate-tuition-and-fees/"
+    - "https://www.purdueglobal.edu/tuition-financial-aid/tuition-reduction/"
+  excel_files:
+    - "data/sample_data.xlsx"

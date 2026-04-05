@@ -1,0 +1,18 @@
+# Environments
+venv/
+env/
+.env
+
+# Cache
+__pycache__/
+*.pyc
+
+# Data & Reports
+knowledge_base/
+data/synthetic_data/
+reports/
+
+# IDE/OS files
+.vscode/
+.idea/
+.DS_Store
